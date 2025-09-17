@@ -71,6 +71,50 @@ def assert_plots_equal(ax1, ax2, labels=True):
         assert ax1.get_xlabel() == ax2.get_xlabel()
         assert ax1.get_ylabel() == ax2.get_ylabel()
 
+def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
+    # Core artists
+    assert_artists_equal(ax1.patches, ax2.patches)
+    assert_artists_equal(ax1.lines, ax2.lines)
+    assert_artists_equal(ax1.collections, ax2.collections)
+    assert_artists_equal(ax1.images, ax2.images)
+    assert_artists_equal(ax1.texts, ax2.texts)
+
+    # Titles and labels
+    if labels:
+        # assert ax1.get_title() == ax2.get_title()
+        assert ax1.get_xlabel() == ax2.get_xlabel()
+        assert ax1.get_ylabel() == ax2.get_ylabel()
+
+        # Axis scales/limits
+        assert ax1.get_xscale() == ax2.get_xscale()
+        assert ax1.get_yscale() == ax2.get_yscale()
+        assert np.allclose(ax1.get_xlim(), ax2.get_xlim(), rtol=rtol, atol=tol)
+        assert np.allclose(ax1.get_ylim(), ax2.get_ylim(), rtol=rtol, atol=tol)
+        assert ax1.get_aspect() == ax2.get_aspect()
+
+        # Ticks
+        assert np.allclose(ax1.get_xticks(), ax2.get_xticks(), rtol=rtol, atol=tol)
+        assert np.allclose(ax1.get_yticks(), ax2.get_yticks(), rtol=rtol, atol=tol)
+        assert [t.get_text() for t in ax1.get_xticklabels()] == [t.get_text() for t in ax2.get_xticklabels()]
+        assert [t.get_text() for t in ax1.get_yticklabels()] == [t.get_text() for t in ax2.get_yticklabels()]
+
+        # Spines
+        for k in ax1.spines:
+            s1, s2 = ax1.spines[k], ax2.spines[k]
+            # assert s1.get_visible() == s2.get_visible()
+            assert_colors_equal(s1.get_edgecolor(), s2.get_edgecolor())
+            assert np.isclose(s1.get_linewidth(), s2.get_linewidth(), rtol=rtol, atol=tol)
+
+        # Legend
+        leg1, leg2 = ax1.get_legend(), ax2.get_legend()
+        # assert (leg1 is None) == (leg2 is None)
+        if leg1 is not None and leg2 is not None:
+            assert [t.get_text() for t in leg1.get_texts()] == [t.get_text() for t in leg2.get_texts()]
+
+        # Gridlines
+        gl1x, gl2x = ax1.get_xgridlines(), ax2.get_xgridlines()
+        gl1y, gl2y = ax1.get_ygridlines(), ax2.get_ygridlines()
+        assert len(gl1x) == len(gl2x) and len(gl1y) == len(gl2y)
 
 def assert_colors_equal(a, b, check_alpha=True):
 
