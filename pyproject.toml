@@ -38,6 +38,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "pytest-xdist",
+    "pytest-timeout",
     "flake8",
     "mypy",
     "pandas-stubs",

@@ -1,10 +1,10 @@
 export SHELL := /bin/bash
 
 test:
-	pytest -n auto --cov=seaborn --cov=tests --cov-config=setup.cfg tests
+	python -m pytest -n auto --cov=seaborn --cov=tests --cov-config=setup.cfg --timeout=30 tests
 
 lint:
-	flake8 seaborn/ tests/
+	python -m flake8 seaborn/ tests/
 
 typecheck:
-	mypy --follow-imports=skip seaborn/_core seaborn/_marks seaborn/_stats
+	python -m mypy --follow-imports=skip seaborn/_core seaborn/_marks seaborn/_stats
