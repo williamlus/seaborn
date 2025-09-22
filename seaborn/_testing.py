@@ -108,8 +108,7 @@ def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
         # Legend
         leg1, leg2 = ax1.get_legend(), ax2.get_legend()
         # assert (leg1 is None) == (leg2 is None)
-        if leg1 is not None and leg2 is not None:
-            assert [t.get_text() for t in leg1.get_texts()] == [t.get_text() for t in leg2.get_texts()]
+        if leg1 is not None and leg2 is not None: assert_legends_equal(leg1, leg2)
 
         # Gridlines
         gl1x, gl2x = ax1.get_xgridlines(), ax2.get_xgridlines()
