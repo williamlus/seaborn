@@ -1,5 +1,7 @@
+import io
 import numpy as np
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgb, to_rgba
 from numpy.testing import assert_array_equal
 
@@ -71,6 +73,20 @@ def assert_plots_equal(ax1, ax2, labels=True):
         assert ax1.get_xlabel() == ax2.get_xlabel()
         assert ax1.get_ylabel() == ax2.get_ylabel()
 
+def assert_plots_img_all_equal(ax1, ax2, **kwargs):
+    def save_ax_nosave(ax, **kwargs):
+        ax.axis("off")
+        ax.figure.canvas.draw()
+        trans = ax.figure.dpi_scale_trans.inverted()
+        bbox = ax.bbox.transformed(trans)
+        buff = io.BytesIO()
+        plt.savefig(buff, format="png", dpi=ax.figure.dpi, bbox_inches=bbox, **kwargs)
+        ax.axis("on")
+        buff.seek(0)
+        im = plt.imread(buff)
+        return im
+    assert_array_equal(save_ax_nosave(ax1, **kwargs), save_ax_nosave(ax2, **kwargs))
+
 def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
     # Core artists
     assert_artists_equal(ax1.patches, ax2.patches)
@@ -114,6 +130,9 @@ def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
         gl1x, gl2x = ax1.get_xgridlines(), ax2.get_xgridlines()
         gl1y, gl2y = ax1.get_ygridlines(), ax2.get_ygridlines()
         assert len(gl1x) == len(gl2x) and len(gl1y) == len(gl2y)
+
+# assert_plots_equal = lambda ax1, ax2, labels=True: assert_plots_all_equal(ax1, ax2, labels=labels, tol=1e-5, rtol=1e-3)
+# assert_plots_equal = lambda ax1, ax2: assert_plots_img_all_equal(ax1, ax2)
 
 def assert_colors_equal(a, b, check_alpha=True):
 
