@@ -131,8 +131,8 @@ def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
         gl1y, gl2y = ax1.get_ygridlines(), ax2.get_ygridlines()
         assert len(gl1x) == len(gl2x) and len(gl1y) == len(gl2y)
 
-# assert_plots_equal = lambda ax1, ax2, labels=True: assert_plots_all_equal(ax1, ax2, labels=labels, tol=1e-5, rtol=1e-3)
-# assert_plots_equal = lambda ax1, ax2: assert_plots_img_all_equal(ax1, ax2)
+# assert_plots_equal = lambda ax1, ax2, labels=True: assert_plots_all_equal(ax1, ax2, labels=labels, tol=1e-5, rtol=1e-3) # Overwrite plots_equal to use full property comparison
+# assert_plots_equal = lambda ax1, ax2: assert_plots_img_all_equal(ax1, ax2) # Overwrite plots_equal to use image comparison
 
 def assert_colors_equal(a, b, check_alpha=True):
 
