@@ -1,7 +1,5 @@
-import io
 import numpy as np
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgb, to_rgba
 from numpy.testing import assert_array_equal
 
@@ -75,6 +73,8 @@ def assert_plots_equal(ax1, ax2, labels=True):
 
 def assert_plots_img_all_equal(ax1, ax2, **kwargs):
     def save_ax_nosave(ax, **kwargs):
+        import io
+        import matplotlib.pyplot as plt
         ax.axis("off")
         ax.figure.canvas.draw()
         trans = ax.figure.dpi_scale_trans.inverted()
@@ -130,9 +130,6 @@ def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
         gl1x, gl2x = ax1.get_xgridlines(), ax2.get_xgridlines()
         gl1y, gl2y = ax1.get_ygridlines(), ax2.get_ygridlines()
         assert len(gl1x) == len(gl2x) and len(gl1y) == len(gl2y)
-
-# assert_plots_equal = lambda ax1, ax2, labels=True: assert_plots_all_equal(ax1, ax2, labels=labels, tol=1e-5, rtol=1e-3) # Overwrite plots_equal to use full property comparison
-# assert_plots_equal = lambda ax1, ax2: assert_plots_img_all_equal(ax1, ax2) # Overwrite plots_equal to use image comparison
 
 def assert_colors_equal(a, b, check_alpha=True):
 
