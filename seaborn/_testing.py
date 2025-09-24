@@ -138,9 +138,9 @@ def assert_plots_equal2(ax1, ax2, labels=True):
         im1 = save_ax_nosave(ax1)
         im2 = save_ax_nosave(ax2)
         # save the images for debugging
-        import io
-        io.imsave("im1.png", im1)
-        io.imsave("im2.png", im2)
+        import matplotlib.pyplot as plt
+        plt.imsave("im1.png", im1)
+        plt.imsave("im2.png", im2)
         raise e
         
 def assert_plots_equal3(ax1, ax2, labels=True):
