@@ -71,20 +71,21 @@ def assert_plots_equal(ax1, ax2, labels=True):
         assert ax1.get_xlabel() == ax2.get_xlabel()
         assert ax1.get_ylabel() == ax2.get_ylabel()
 
+def save_ax_nosave(ax, **kwargs):
+    import io
+    import matplotlib.pyplot as plt
+    ax.axis("off")
+    ax.figure.canvas.draw()
+    trans = ax.figure.dpi_scale_trans.inverted()
+    bbox = ax.bbox.transformed(trans)
+    buff = io.BytesIO()
+    plt.savefig(buff, format="png", dpi=ax.figure.dpi, bbox_inches=bbox, **kwargs)
+    ax.axis("on")
+    buff.seek(0)
+    im = plt.imread(buff)
+    return im
+
 def assert_plots_img_all_equal(ax1, ax2, **kwargs):
-    def save_ax_nosave(ax, **kwargs):
-        import io
-        import matplotlib.pyplot as plt
-        ax.axis("off")
-        ax.figure.canvas.draw()
-        trans = ax.figure.dpi_scale_trans.inverted()
-        bbox = ax.bbox.transformed(trans)
-        buff = io.BytesIO()
-        plt.savefig(buff, format="png", dpi=ax.figure.dpi, bbox_inches=bbox, **kwargs)
-        ax.axis("on")
-        buff.seek(0)
-        im = plt.imread(buff)
-        return im
     assert_array_equal(save_ax_nosave(ax1, **kwargs), save_ax_nosave(ax2, **kwargs))
 
 def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
@@ -130,6 +131,30 @@ def assert_plots_all_equal(ax1, ax2, labels=True, tol=1e-5, rtol=1e-3):
         gl1x, gl2x = ax1.get_xgridlines(), ax2.get_xgridlines()
         gl1y, gl2y = ax1.get_ygridlines(), ax2.get_ygridlines()
         assert len(gl1x) == len(gl2x) and len(gl1y) == len(gl2y)
+
+def assert_plots_equal2(ax1, ax2, labels=True):
+    try: assert_plots_img_all_equal(ax1, ax2)
+    except (AssertionError, Exception) as e:
+        im1 = save_ax_nosave(ax1)
+        im2 = save_ax_nosave(ax2)
+        # save the images for debugging
+        import io
+        io.imsave("im1.png", im1)
+        io.imsave("im2.png", im2)
+        raise e
+        
+def assert_plots_equal3(ax1, ax2, labels=True):
+    try: assert_plots_all_equal(ax1, ax2, labels=labels)
+    except (AssertionError, Exception) as e:
+        im1 = save_ax_nosave(ax1)
+        im2 = save_ax_nosave(ax2)
+        # save the images for debugging
+        import matplotlib.pyplot as plt
+        plt.imsave("im1.png", im1)
+        plt.imsave("im2.png", im2)
+        raise e
+
+assert_plots_equal = assert_plots_equal3
 
 def assert_colors_equal(a, b, check_alpha=True):
 
